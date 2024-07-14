@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Sora', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.text-black {
+  @apply text-primary text-lg
+}
+.text-gray {
+  @apply text-secondary text-xs font-medium
+}
+
+.btn {
+  @apply text-base rounded-2xl flex gap-2 items-center p-3;
+}
+
+.btn--primary {
+  @apply border text-white  bg-purple-500 rounded-lg p-2 px-4 capitalize;
+}
+
+.btn--secondary {
+  @apply border text-white  bg-blue-500 rounded-lg p-2 px-4 capitalize;
+}
+
+.btn--outline {
+    @apply border text-black rounded p-2 px-4 capitalize;
+}
+
