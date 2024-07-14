@@ -64,5 +64,5 @@ const teamListSlice = createSlice({
     },
 });
 
-export const { clearSelectedIpo, updateTeam, deleteTeamItem, deleteBulkItem } = teamListSlice.actions;
+export const { clearSelecteTeam, updateTeam, deleteTeamItem, deleteBulkItem } = teamListSlice.actions;
 export default teamListSlice.reducer;

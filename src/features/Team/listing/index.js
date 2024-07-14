@@ -6,12 +6,11 @@ import { deleteBulkItem, deleteTeamItem, updateTeam } from '../teamSlice';
 import Modal from 'components/Modal';
 import { FiCheckCircle } from 'react-icons/fi';
 import TextContainer from '../components/TextContainer';
-import CheckBox from 'components/Checkbox';
 
 export const modalRef = createRef();
 
 const TeamListing = () => {
-    const { Ipos } = useSelector(state => state.ipoState);
+    const { teams } = useSelector(state => state.teamState);
     const dispatch = useDispatch()
 
     const [showDeleteSuccess, setShowDeleteSucess] = useState(false);
@@ -79,11 +78,11 @@ const TeamListing = () => {
             </Modal>
             <section className='flex items-center justify-between'>
                 <h5 className='text-lg flex items-center gap-2'>Team members
-                    <span class="inline-flex whitespace-nowrap max-w-min items-center gap-1 rounded-full bg-purple-50 px-2 py-1 text-xs font-semibold text-purple-600">{Ipos.length} members</span>
+                    <span class="inline-flex whitespace-nowrap max-w-min items-center gap-1 rounded-full bg-purple-50 px-2 py-1 text-xs font-semibold text-purple-600">{teams.length} members</span>
                 </h5>
                 <button onClick={handleDeleteSelected} className='btn btn--primary'>delete selected</button>
             </section>
-            <Table columns={columns} data={Ipos} />
+            <Table columns={columns} data={teams} />
         </section>
     )
 }

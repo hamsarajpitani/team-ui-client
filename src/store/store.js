@@ -3,7 +3,7 @@ import teamSlice from 'features/Team/teamSlice';
 
 const store = configureStore({
     reducer: {
-        ipoState: teamSlice
+        teamState: teamSlice
     },
 });
 

@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import { formatToIndianCurrency, formatToIndianCurrencyWithLabel } from 'utils/helpers/currencyFormatter';
 import TextContainer from '../components/TextContainer';
 import Modal from 'components/Modal';
 import DynamicForm from 'components/Form';

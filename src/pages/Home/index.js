@@ -2,14 +2,14 @@
 import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import TeamListing from 'features/Team/listing';
-import { fetchTeamList } from 'features/Team/api';
+import { fetchteams } from 'features/Team/teamSlice';
 
 const Home = () => {
-    const dipatch = useDispatch();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        dipatch(fetchTeamList())
-    }, [dipatch])
+        dispatch(fetchteams())
+    }, [dispatch])
 
     return (
         <div>
