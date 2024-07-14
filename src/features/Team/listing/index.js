@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Table from 'components/Table';
 import { columns as baseColumns } from './columns';
 import { createRef, useState } from 'react';
-import { deleteBulkItem, deleteIpoItem, updateIpo } from '../ipoSlice';
+import { deleteBulkItem, deleteTeamItem, updateTeam } from '../teamSlice';
 import Modal from 'components/Modal';
 import { FiCheckCircle } from 'react-icons/fi';
 import TextContainer from '../components/TextContainer';
@@ -10,7 +10,7 @@ import CheckBox from 'components/Checkbox';
 
 export const modalRef = createRef();
 
-const IPOListing = () => {
+const TeamListing = () => {
     const { Ipos } = useSelector(state => state.ipoState);
     const dispatch = useDispatch()
 
@@ -20,14 +20,14 @@ const IPOListing = () => {
 
     const handleSubmit = (formData) => {
         console.log(formData)
-        dispatch(updateIpo(formData));
+        dispatch(updateTeam(formData));
         modalRef.current?.close();
     };
 
 
     const handleDeleteSubmit = (formData) => {
         try {
-            dispatch(deleteIpoItem(formData));
+            dispatch(deleteTeamItem(formData));
             modalRef.current?.close();
             setShowDeleteSucess(true)
             setTimeout(() => {
@@ -88,4 +88,4 @@ const IPOListing = () => {
     )
 }
 
-export default IPOListing
+export default TeamListing

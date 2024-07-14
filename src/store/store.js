@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import ipoSlice from 'features/Team/ipoSlice';
+import teamSlice from 'features/Team/teamSlice';
 
 const store = configureStore({
     reducer: {
-        ipoState: ipoSlice
+        ipoState: teamSlice
     },
 });
 
