@@ -7,12 +7,12 @@ const initialState = {
     error: null,
     pagination: null,
     selectedTeam: null,
-    currentPage: 0, // Track the current page number
+    currentPage: 0,
 };
 
 export const fetchteams = createAsyncThunk(
     'IpoList/fetchteams',
-    async (page, { rejectWithValue }) => {
+    async (page = 0, { rejectWithValue }) => {
         try {
             const data = await fetchMembers(page + 1)
             return data;
@@ -74,7 +74,7 @@ const teamListSlice = createSlice({
             })
             .addCase(fetchteams.fulfilled, (state, action) => {
                 state.loading = false;
-                state.teams = [...state.teams, ...action.payload.items];
+                state.teams = action.payload.items;
                 state.pagination = action.payload.count
             })
             .addCase(fetchteams.rejected, (state, action) => {
