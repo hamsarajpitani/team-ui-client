@@ -41,7 +41,7 @@ export const updateMember = async (memberData) => {
 export const deleteMember = async (memberId) => {
     try {
         const response = await axios.delete(`${API_BASE_URL}/members/${memberId}`);
-        return memberId; // Assuming you want to return the deleted memberId for UI updates
+        return memberId;
     } catch (error) {
         throw new Error(error.response?.data?.message || error.message);
     }
