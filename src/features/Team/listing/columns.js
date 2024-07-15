@@ -17,11 +17,11 @@ export const columns = ({ handleSubmit, handleAllCheckboxCheck, handleDeleteSubm
             <CheckBox onChange={() => handleAllCheckboxCheck()} />
             name</div>,
         render: (row) => {
-            const { avatar, name, email, id } = row;
+            const { avatar, name, email, _id } = row;
             const emailDomain = email.split('@').at(-1);
 
             return <div class='flex items-center'>
-                <CheckBox id={id} className="row-checkbox" checked={!!selectedRowsIds[id]} onChange={() => handleCheckboxChange(id)}
+                <CheckBox id={_id} className="row-checkbox" checked={!!selectedRowsIds[_id]} onChange={() => handleCheckboxChange(_id)}
                 />
                 <img
                     class='object-cover w-8 h-8 mr-2 rounded-full'

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Table from 'components/Table';
 import { columns as baseColumns } from './columns';
 import { createRef, useState } from 'react';
-import { deleteBulkItem, deleteTeamItem, updateTeam } from '../teamSlice';
+import { deleteBulkItem, deleteMemberAsync, deleteMembersAsync, deleteTeamItem, updateMemberAsync, updateTeam } from '../teamSlice';
 import Modal from 'components/Modal';
 import { FiCheckCircle } from 'react-icons/fi';
 import TextContainer from '../components/TextContainer';
@@ -10,7 +10,7 @@ import TextContainer from '../components/TextContainer';
 export const modalRef = createRef();
 
 const TeamListing = () => {
-    const { teams } = useSelector(state => state.teamState);
+    const { teams, pagination } = useSelector(state => state.teamState);
     const dispatch = useDispatch()
 
     const [showDeleteSuccess, setShowDeleteSucess] = useState(false);
@@ -18,15 +18,13 @@ const TeamListing = () => {
 
 
     const handleSubmit = (formData) => {
-        console.log(formData)
-        dispatch(updateTeam(formData));
+        dispatch(updateMemberAsync(formData));
         modalRef.current?.close();
     };
 
-
-    const handleDeleteSubmit = (formData) => {
+    const handleDeleteSubmit = ({ _id }) => {
         try {
-            dispatch(deleteTeamItem(formData));
+            dispatch(deleteMemberAsync(_id));
             modalRef.current?.close();
             setShowDeleteSucess(true)
             setTimeout(() => {
@@ -58,13 +56,12 @@ const TeamListing = () => {
 
     const handleDeleteSelected = () => {
         try {
-            dispatch(deleteBulkItem(selectedRowsIds));
-
+            const Ids = Object.entries(selectedRowsIds).map(([key, value]) => value ? key : false).filter(Boolean);
+            dispatch(deleteMembersAsync(Ids));
         } catch (error) {
             console.error(error)
         }
     }
-
 
     const columns = baseColumns({ handleSubmit, handleAllCheckboxCheck, handleDeleteSubmit, handleCheckboxChange, selectedRowsIds });
 
@@ -82,7 +79,7 @@ const TeamListing = () => {
                 </h5>
                 <button onClick={handleDeleteSelected} className='btn btn--primary'>delete selected</button>
             </section>
-            <Table columns={columns} data={teams} />
+            <Table columns={columns} data={teams} pagination={pagination} />
         </section>
     )
 }

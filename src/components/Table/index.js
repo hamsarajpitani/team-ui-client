@@ -1,5 +1,7 @@
+import { fetchteams } from 'features/Team/teamSlice';
 import { useState } from 'react';
 import ReactPaginate from 'react-paginate';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -36,29 +38,28 @@ const TableColumn = ({ value, render }) => (
 
 
 const DataTable = ({ columns, data, pagination, itemsPerPage = 10 }) => {
-    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [itemOffset, setItemOffset] = useState(0);
     const [currentPage, setCurrentPage] = useState(Math.floor(itemOffset / itemsPerPage));
 
     const endOffset = itemOffset + itemsPerPage;
-    const currentItems = data.slice(itemOffset, endOffset);
-    const pageCount = Math.ceil(data.length / itemsPerPage);
+    const currentItems = data?.slice?.(itemOffset, endOffset);
+    const pageCount = Math.ceil(pagination / itemsPerPage);
 
     const changeOffset = (selected) => {
-        const newOffset = (selected * itemsPerPage) % data.length;
+        const newOffset = (selected * itemsPerPage) % pagination;
         setItemOffset(newOffset);
         setCurrentPage(selected)
     }
 
-
     const handlePageClick = (event) => {
         changeOffset(event.selected)
+        dispatch(fetchteams(event.selected))
     };
 
     const handlePreviousClick = () => {
         const previousPage = Math.floor(itemOffset / itemsPerPage) - 1;
         changeOffset(previousPage)
-
     };
 
     const handleNextClick = () => {
@@ -73,7 +74,7 @@ const DataTable = ({ columns, data, pagination, itemsPerPage = 10 }) => {
                     <table class="w-full border-collapse bg-white text-left text-sm text-gray-500">
                         <TableHeader columns={columns} />
                         <tbody class="divide-y divide-gray-100 border-t border-gray-100">
-                            {currentItems.map((row) => (
+                            {currentItems?.map((row) => (
                                 <TableRow
                                     key={row.id}
                                     row={row}
@@ -83,7 +84,7 @@ const DataTable = ({ columns, data, pagination, itemsPerPage = 10 }) => {
                         </tbody>
                     </table>
 
-                    {!pagination && <div class="flex items-center justify-between p-4">
+                    {pagination && <div class="flex items-center justify-between p-4">
                         <button onClick={handlePreviousClick}
                             disabled={currentPage === 0} className='btn btn--outline'>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 rtl:-scale-x-100">

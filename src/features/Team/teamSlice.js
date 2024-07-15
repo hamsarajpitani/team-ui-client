@@ -1,20 +1,57 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchTeamList } from './api';
-import { addIds } from 'utils/helpers/addIds';
+import { deleteMember, deleteMembers, fetchMembers, fetchTeamList, updateMember } from './api';
 
 const initialState = {
     teams: [],
     loading: true,
     error: null,
+    pagination: null,
     selectedTeam: null,
+    currentPage: 0, // Track the current page number
 };
 
 export const fetchteams = createAsyncThunk(
     'IpoList/fetchteams',
-    async (arg, { rejectWithValue }) => {
+    async (page, { rejectWithValue }) => {
         try {
-            const data = await fetchTeamList()
-            return addIds(data);
+            const data = await fetchMembers(page + 1)
+            return data;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const updateMemberAsync = createAsyncThunk(
+    'teamList/updateMember',
+    async (memberData, { rejectWithValue }) => {
+        try {
+            const response = await updateMember(memberData);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteMemberAsync = createAsyncThunk(
+    'teamList/deleteMember',
+    async (memberId, { rejectWithValue }) => {
+        try {
+            const response = await deleteMember(memberId);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
+export const deleteMembersAsync = createAsyncThunk(
+    'teamList/deleteMembers',
+    async (memberIds, { rejectWithValue }) => {
+        try {
+            await deleteMembers(memberIds);
+            return memberIds;
         } catch (error) {
             return rejectWithValue(error.message);
         }
@@ -28,24 +65,6 @@ const teamListSlice = createSlice({
         clearSelecteTeam(state) {
             state.selectedTeam = null;
         },
-        updateTeam: (state, action) => {
-            const data = action.payload;
-            const { id } = data
-            const itemIndex = state.teams.findIndex(({ id: ipoId }) => ipoId === id);
-            if (itemIndex >= 0 && itemIndex < state.teams.length) {
-                state.teams[itemIndex] = { ...state.teams[itemIndex], ...data };
-            }
-        },
-        deleteTeamItem: (state, action) => {
-            const data = action.payload;
-            const { id } = data
-            state.teams = state.teams.filter(item => item.id !== id);
-        },
-        deleteBulkItem: (state, action) => {
-            const data = action.payload;
-            const Ids = Object.entries(data).map(([key, value]) => value ? key : false).filter(Boolean);
-            state.teams = state.teams.filter(item => !Ids.includes(item.id));
-        },
     },
     extraReducers: (builder) => {
         builder
@@ -55,14 +74,28 @@ const teamListSlice = createSlice({
             })
             .addCase(fetchteams.fulfilled, (state, action) => {
                 state.loading = false;
-                state.teams = action.payload;
+                state.teams = [...state.teams, ...action.payload.items];
+                state.pagination = action.payload.count
             })
             .addCase(fetchteams.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || 'An error occurred fetching Ipos';
             })
+            .addCase(updateMemberAsync.fulfilled, (state, action) => {
+                const updatedMember = action.payload;
+                const itemIndex = state.teams.findIndex(({ _id: ipoId }) => ipoId === updatedMember._id);
+                if (itemIndex >= 0 && itemIndex < state.teams.length) {
+                    state.teams[itemIndex] = { ...state.teams[itemIndex], ...updatedMember };
+                }
+            })
+            .addCase(deleteMemberAsync.fulfilled, (state, action) => {
+                state.teams = state.teams.filter((member) => member._id !== action.payload);
+            })
+            .addCase(deleteMembersAsync.fulfilled, (state, action) => {
+                state.teams = state.teams.filter(item => !action.payload.includes(item._id));
+            });
     },
 });
 
-export const { clearSelecteTeam, updateTeam, deleteTeamItem, deleteBulkItem } = teamListSlice.actions;
+export const { clearSelecteTeam } = teamListSlice.actions;
 export default teamListSlice.reducer;
